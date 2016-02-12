@@ -39,3 +39,7 @@ This will create a minimal config that will scan the indicated `monitoredPackage
 | rootClassName     | No (defaults to `I18N`)                                | String          |
 | javaDirectory     | No (defaults to `src/main/java`)                       | String          |
 | outputDirectory   | No (defaults to `target/generated-sources/wicket-i18n` | String          |
+
+## Execution
+
+To run the plugin, simply run `mvn generate-sources` in your project directory.
