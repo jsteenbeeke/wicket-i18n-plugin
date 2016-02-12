@@ -8,11 +8,11 @@ Add the following segment to the `<plugins>` section of your POM's `<build>` tag
 
 ```xml
 <plugin>
-	<groupId>nl.topicus.onderwijs</groupId>
+	<groupId>com.jeroensteenbeeke</groupId>
 	<artifactId>wicket-i18n-maven-plugin</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<configuration>
-		<packagePrefix>com.periselene.accounting.web.i18n</packagePrefix>
+		<packagePrefix>your.package.prefix</packagePrefix>
 		<monitoredPackages>
 			<monitoredPackage>path.to.your.web.package</monitoredPackage>
 		</monitoredPackages>
