@@ -54,7 +54,7 @@ public class GenerateConstantMojo extends AbstractMojo
 	@Parameter(required = true, defaultValue = "src/main/java")
 	public File javaDirectory;
 
-	@Parameter(required = false)
+	@Parameter(required = true)
 	public List<String> monitoredPackages;
 
 	@Parameter(required = false)
