@@ -37,7 +37,7 @@ public class GenerateConstantMojo extends AbstractMojo
 	/**
 	 * The prefix for the generated I18N class
 	 */
-	@Parameter(required = false)
+	@Parameter(required = true)
 	public String packagePrefix;
 
 	@Parameter(required = true, defaultValue = "I18N")
