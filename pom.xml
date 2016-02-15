@@ -2,11 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>nl.topicus.onderwijs.parent</groupId>
-		<artifactId>onderwijs-parent-base</artifactId>
-		<version>2016.0.2</version>
-	</parent>
 
 	<groupId>com.jeroensteenbeeke</groupId>
 	<artifactId>wicket-i18n-maven-plugin</artifactId>
@@ -15,58 +10,133 @@
 
 	<name>Wicket I18N Maven Plugin</name>
 	<description>Plugin for generating Java constants containing Wicket I18N keys</description>
-	<organization>
-		<name>Topicus Onderwijs B.V.</name>
-		<url>http://www.topicus.nl/onderwijs</url>
-	</organization>
+
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
 
 	<inceptionYear>2016</inceptionYear>
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/topicusonderwijs/wicket-i18n-plugin/issues</url>
+		<url>https://github.com/jsteenbeeke/wicket-i18n-plugin/issues</url>
 	</issueManagement>
 
+	<developers>
+		<developer>
+			<name>Jeroen Steenbeeke</name>
+			<email>j.steenbeeke.ml@gmail.com</email>
+			<url>https://github.com/jsteenbeeke/</url>
+		</developer>
+	</developers>
+
 	<scm>
-		<url>https://github.com/topicusonderwijs/wicket-i18n-plugin</url>
-		<connection>scm:git:git@github.com:topicusonderwijs/wicket-i18n-plugin.git</connection>
+		<url>https://github.com/jsteenbeeke/wicket-i18n-plugin</url>
+		<connection>scm:git:git@github.com:jsteenbeeke/wicket-i18n-plugin.git</connection>
+		<developerConnection>scm:git:git@github.com:jsteenbeeke/wicket-i18n-plugin.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
-	<distributionManagement>
-		<repository>
-			<id>topicus-repo</id>
-			<name>topicus-repo.local-releases</name>
-			<url>http://repo-onderwijs.topicus.local/artifactory/plugins-releases-local</url>
-			<uniqueVersion>false</uniqueVersion>
-		</repository>
-		<snapshotRepository>
-			<id>topicus-repo</id>
-			<url>http://repo-onderwijs.topicus.local/artifactory/plugins-snapshots-local</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
+	<properties>
+		<version.javax.servlet>3.0-alpha-1</version.javax.servlet>
+		<version.org.apache.maven.core>3.3.9</version.org.apache.maven.core>
+		<version.org.apache.maven.plugintools>3.4</version.org.apache.maven.plugintools>
+		<version.org.apache.wicket>7.2.0</version.org.apache.wicket>
+		<version.com.google.findbugs>3.0.1u2</version.com.google.findbugs>
+		<version.com.google.guava>19.0</version.com.google.guava>
+		<version.org.junit>4.12</version.org.junit>
+		<version.org.slf4j>1.7.13</version.org.slf4j>
+		<version.org.sonatype.plexus.buildapi>0.0.7</version.org.sonatype.plexus.buildapi>
+		<version.org.codehaus.plexus.utils>3.0.22</version.org.codehaus.plexus.utils>
+		<version.org.apache.maven.enforcer>1.3.1</version.org.apache.maven.enforcer>
+		<version.org.codehaus.mojo.extraenforcerrules>1.0-beta-1</version.org.codehaus.mojo.extraenforcerrules>
+		<version.com.github.ferstl.pedanticpomenforcers>1.1.1</version.com.github.ferstl.pedanticpomenforcers>
+		<version.commons.io>2.4</version.commons.io>
+		<version.org.apache.maven.pluginplugin>3.4</version.org.apache.maven.pluginplugin>
+	</properties>
+
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>com.google.code.findbugs</groupId>
+				<artifactId>annotations</artifactId>
+				<version>${version.com.google.findbugs}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${version.com.google.guava}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${version.commons.io}</version>
+			</dependency>
+			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
-				<version>3.0-alpha-1</version>
+				<version>${version.javax.servlet}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-artifact</artifactId>
+				<version>${version.org.apache.maven.core}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-plugin-api</artifactId>
+				<version>${version.org.apache.maven.core}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven.plugin-tools</groupId>
+				<artifactId>maven-plugin-annotations</artifactId>
+				<version>${version.org.apache.maven.plugintools}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.wicket</groupId>
+				<artifactId>wicket-core</artifactId>
+				<version>${version.org.apache.wicket}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>${version.org.codehaus.plexus.utils}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${version.org.junit}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${version.org.slf4j}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${version.org.slf4j}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sonatype.plexus</groupId>
+				<artifactId>plexus-build-api</artifactId>
+				<version>${version.org.sonatype.plexus.buildapi}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-core</artifactId>
+				<version>${version.org.apache.maven.core}</version>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>annotations</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -88,12 +158,21 @@
 			<artifactId>wicket-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.sonatype.plexus</groupId>
 			<artifactId>plexus-build-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -103,7 +182,54 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>${version.org.apache.maven.enforcer}</version>
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<rules>
+							<dependencyConvergence />
+							<banDuplicateClasses>
+								<findAllDuplicates>true</findAllDuplicates>
+							</banDuplicateClasses>
+							<compound
+								implementation="com.github.ferstl.maven.pomenforcers.CompoundPedanticEnforcer">
+								<!-- Enforcers -->
+								<enforcers>POM_SECTION_ORDER,DEPENDENCY_MANAGEMENT_ORDER,DEPENDENCY_ORDER,DEPENDENCY_CONFIGURATION,PLUGIN_MANAGEMENT_ORDER,PLUGIN_CONFIGURATION</enforcers>
+							</compound>
+						</rules>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>extra-enforcer-rules</artifactId>
+							<version>${version.org.codehaus.mojo.extraenforcerrules}</version>
+						</dependency>
+						<dependency>
+							<groupId>com.github.ferstl</groupId>
+							<artifactId>pedantic-pom-enforcers</artifactId>
+							<version>${version.com.github.ferstl.pedanticpomenforcers}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-plugin-plugin</artifactId>
+					<version>${version.org.apache.maven.pluginplugin}</version>
 					<configuration>
 						<goalPrefix>wicket-i18n</goalPrefix>
 						<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
