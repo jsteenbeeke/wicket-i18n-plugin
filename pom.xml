@@ -9,6 +9,7 @@
 
 	<name>Wicket I18N Maven Plugin</name>
 	<description>Plugin for generating Java constants containing Wicket I18N keys</description>
+	<url>https://github.com/jsteenbeeke/wicket-i18n-plugin</url>
 
 	<licenses>
 		<license>
