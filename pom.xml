@@ -51,20 +51,25 @@
 
 	<properties>
 		<version.javax.servlet>3.0-alpha-1</version.javax.servlet>
-		<version.org.apache.maven.core>3.3.9</version.org.apache.maven.core>
-		<version.org.apache.maven.plugintools>3.4</version.org.apache.maven.plugintools>
-		<version.org.apache.wicket>7.2.0</version.org.apache.wicket>
+		<version.com.github.ferstl.pedanticpomenforcers>1.1.1</version.com.github.ferstl.pedanticpomenforcers>
 		<version.com.google.findbugs>3.0.1u2</version.com.google.findbugs>
 		<version.com.google.guava>19.0</version.com.google.guava>
+		<version.commons.io>2.4</version.commons.io>
+		<version.org.apache.maven.core>3.3.9</version.org.apache.maven.core>
+		<version.org.apache.maven.enforcer>1.3.1</version.org.apache.maven.enforcer>
+		<version.org.apache.maven.plugins.gpg>1.5</version.org.apache.maven.plugins.gpg>
+		<version.org.apache.maven.javadocplugin>2.9.1</version.org.apache.maven.javadocplugin>
+		<version.org.apache.maven.pluginplugin>3.4</version.org.apache.maven.pluginplugin>
+		<version.org.apache.maven.plugintools>3.4</version.org.apache.maven.plugintools>
+		<version.org.apache.maven.release>2.5</version.org.apache.maven.release>
+		<version.org.apache.maven.sourceplugin>2.2.1</version.org.apache.maven.sourceplugin>
+		<version.org.apache.wicket>7.2.0</version.org.apache.wicket>
+		<version.org.codehaus.mojo.extraenforcerrules>1.0-beta-1</version.org.codehaus.mojo.extraenforcerrules>
+		<version.org.codehaus.plexus.utils>3.0.22</version.org.codehaus.plexus.utils>
 		<version.org.junit>4.12</version.org.junit>
 		<version.org.slf4j>1.7.13</version.org.slf4j>
 		<version.org.sonatype.plexus.buildapi>0.0.7</version.org.sonatype.plexus.buildapi>
-		<version.org.codehaus.plexus.utils>3.0.22</version.org.codehaus.plexus.utils>
-		<version.org.apache.maven.enforcer>1.3.1</version.org.apache.maven.enforcer>
-		<version.org.codehaus.mojo.extraenforcerrules>1.0-beta-1</version.org.codehaus.mojo.extraenforcerrules>
-		<version.com.github.ferstl.pedanticpomenforcers>1.1.1</version.com.github.ferstl.pedanticpomenforcers>
-		<version.commons.io>2.4</version.commons.io>
-		<version.org.apache.maven.pluginplugin>3.4</version.org.apache.maven.pluginplugin>
+		<version.org.sonatype.plugins.nexusstaging>1.6.3</version.org.sonatype.plugins.nexusstaging>
 	</properties>
 
 
@@ -238,6 +243,33 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.gpg}</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${version.org.apache.maven.javadocplugin}</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-plugin-plugin</artifactId>
 					<version>${version.org.apache.maven.pluginplugin}</version>
 					<configuration>
@@ -259,12 +291,67 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${version.org.apache.maven.release}</version>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<useReleaseProfile>false</useReleaseProfile>
+						<releaseProfiles>release</releaseProfiles>
+						<goals>deploy</goals>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${version.org.apache.maven.sourceplugin}</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.sonatype.plugins</groupId>
+					<artifactId>nexus-staging-maven-plugin</artifactId>
+					<version>${version.org.sonatype.plugins.nexusstaging}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<serverId>ossrh</serverId>
+						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+						<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
