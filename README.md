@@ -10,7 +10,7 @@ Add the following segment to the `<plugins>` section of your POM's `<build>` tag
 <plugin>
 	<groupId>com.jeroensteenbeeke</groupId>
 	<artifactId>wicket-i18n-maven-plugin</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<configuration>
 		<packagePrefix>your.package.prefix</packagePrefix>
 		<monitoredPackages>
