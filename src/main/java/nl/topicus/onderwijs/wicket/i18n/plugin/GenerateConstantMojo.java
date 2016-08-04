@@ -25,15 +25,13 @@ import org.apache.maven.project.MavenProject;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 /**
- * Generates an internationalization class in the package specified by the user. Fills
- * this class with constants based on keys used in wicket pages.
+ * Generates an internationalization class in the package specified by the user.
+ * Fills this class with constants based on keys used in wicket pages.
  *
  * @author Jeroen Steenbeeke
  */
-@Mojo(defaultPhase = LifecyclePhase.GENERATE_SOURCES, name = "generate", threadSafe = true,
-		requiresDependencyResolution = ResolutionScope.TEST)
-public class GenerateConstantMojo extends AbstractMojo
-{
+@Mojo(defaultPhase = LifecyclePhase.GENERATE_SOURCES, name = "generate", threadSafe = true, requiresDependencyResolution = ResolutionScope.TEST)
+public class GenerateConstantMojo extends AbstractMojo {
 	/**
 	 * The prefix for the generated I18N class
 	 */
@@ -47,8 +45,7 @@ public class GenerateConstantMojo extends AbstractMojo
 	 * The name of the folder to place output in {@code }, defaults to
 	 * {@code $(target)/generated-sources/wicket-i18n}
 	 */
-	@Parameter(required = true,
-			defaultValue = "${project.build.directory}/generated-sources/wicket-i18n")
+	@Parameter(required = true, defaultValue = "${project.build.directory}/generated-sources/wicket-i18n")
 	public File outputDirectory;
 
 	@Parameter(required = true, defaultValue = "src/main/java")
@@ -67,10 +64,8 @@ public class GenerateConstantMojo extends AbstractMojo
 	protected MavenProject project;
 
 	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException
-	{
-		if (monitoredPackages == null || packagePrefix == null)
-		{
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		if (monitoredPackages == null || packagePrefix == null) {
 			getLog().warn("Missing monitoredPackages and/or packagePrefix, skipping I18N plugin");
 			return;
 		}
@@ -82,53 +77,49 @@ public class GenerateConstantMojo extends AbstractMojo
 		// if (buildContext == null || !buildContext.isIncremental())
 		// {
 		WicketMessageKeyTree baseTree = new WicketMessageKeyTree();
-		List<File> componentHTMLFiles =
-			Files.getComponentHTMLFiles(javaDirectory, monitoredPackages, getLog());
+		List<File> componentHTMLFiles = Files.getComponentHTMLFiles(javaDirectory, monitoredPackages, getLog());
 
 		componentHTMLFiles.forEach(f -> getLog().info("\t".concat(f.getPath())));
 		componentHTMLFiles.stream().map(WicketKeyExtractor::extractKeys) //
-			.flatMap(Set::stream) //
-			.filter(Objects::nonNull) //
-			.forEach(baseTree::add);
-		if (propertyFiles != null)
-		{
+				.flatMap(Set::stream) //
+				.filter(Objects::nonNull) //
+				.forEach(baseTree::add);
+		if (propertyFiles != null) {
 			propertyFiles.forEach(f -> getLog().info("\t".concat(f.getPath())));
 			propertyFiles.forEach(f -> {
 				Properties p = new Properties();
-				try
-				{
-					p.load(new FileInputStream(f));
+				try {
+					if (f.getName().endsWith(".properties")) {
+						p.load(new FileInputStream(f));
+					} else {
+						p.loadFromXML(new FileInputStream(f));
+					}
 					p.forEach((k, v) -> {
 						getLog().info("\t\t".concat(k.toString()));
 						baseTree.add(k.toString());
 					});
-				}
-				catch (IOException ioe)
-				{
-					getLog().warn(
-						String.format("Failed to parse property file %s: %s", f.getPath(),
-							ioe.getMessage()));
+				} catch (IOException ioe) {
+					getLog().warn(String.format("Failed to parse property file %s: %s", f.getPath(), ioe.getMessage()));
 				}
 			});
 		}
 
 		File output = new File(packageDir, String.format("%s.java", rootClassName));
-		try
-		{
+		try {
 			ConstantFileGenerator.writeToFile(baseTree, output, packagePrefix, rootClassName);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
+		} finally {
+			if (buildContext != null) {
+				buildContext.refresh(packageDir);
+			}
 		}
 		// }
 	}
 
-	private File createOutputDirectories() throws MojoFailureException
-	{
+	private File createOutputDirectories() throws MojoFailureException {
 
-		if (!outputDirectory.exists() && !outputDirectory.mkdirs())
-		{
+		if (!outputDirectory.exists() && !outputDirectory.mkdirs()) {
 			throw new MojoFailureException("Could not create output folder");
 		}
 
@@ -138,23 +129,19 @@ public class GenerateConstantMojo extends AbstractMojo
 
 		File packageDir = outputDirectory;
 
-		if (pkg[0].length() > 0)
-		{
+		if (pkg[0].length() > 0) {
 			packageDir = new File(outputDirectory, pkg[0]);
 		}
 
-		if (pkg.length > 1)
-		{
-			for (int i = 1; i < pkg.length; i++)
-			{
+		if (pkg.length > 1) {
+			for (int i = 1; i < pkg.length; i++) {
 				packageDir = new File(packageDir, pkg[i]);
 			}
 		}
 
-		if (!packageDir.exists() && !packageDir.mkdirs())
-		{
-			throw new MojoFailureException(String.format("Could not create package %s in %s",
-				packagePrefix, outputDirectory.getPath()));
+		if (!packageDir.exists() && !packageDir.mkdirs()) {
+			throw new MojoFailureException(
+					String.format("Could not create package %s in %s", packagePrefix, outputDirectory.getPath()));
 		}
 
 		return packageDir;
