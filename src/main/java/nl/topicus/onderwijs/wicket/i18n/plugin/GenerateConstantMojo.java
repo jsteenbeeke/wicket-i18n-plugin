@@ -74,47 +74,63 @@ public class GenerateConstantMojo extends AbstractMojo {
 
 		File packageDir = createOutputDirectories();
 
+		boolean writeAnything = false;
+
 		// if (buildContext == null || !buildContext.isIncremental())
 		// {
 		WicketMessageKeyTree baseTree = new WicketMessageKeyTree();
 		List<File> componentHTMLFiles = Files.getComponentHTMLFiles(javaDirectory, monitoredPackages, getLog());
 
-		componentHTMLFiles.forEach(f -> getLog().info("\t".concat(f.getPath())));
-		componentHTMLFiles.stream().map(WicketKeyExtractor::extractKeys) //
-				.flatMap(Set::stream) //
-				.filter(Objects::nonNull) //
-				.forEach(baseTree::add);
-		if (propertyFiles != null) {
-			propertyFiles.forEach(f -> getLog().info("\t".concat(f.getPath())));
-			propertyFiles.forEach(f -> {
-				Properties p = new Properties();
-				try {
-					if (f.getName().endsWith(".properties")) {
-						p.load(new FileInputStream(f));
-					} else {
-						p.loadFromXML(new FileInputStream(f));
+		if (buildContext != null
+				&& (!buildContext.isIncremental() || componentHTMLFiles.stream().anyMatch(buildContext::hasDelta)
+						|| (propertyFiles != null && propertyFiles.stream().anyMatch(buildContext::hasDelta)))) {
+			getLog().info("HTML files");
+			componentHTMLFiles.forEach(f -> getLog().info("\t".concat(f.getPath())));
+			componentHTMLFiles.stream().map(WicketKeyExtractor::extractKeys) //
+					.flatMap(Set::stream) //
+					.filter(Objects::nonNull) //
+					.forEach(baseTree::add);
+
+			if (propertyFiles != null) {
+				getLog().info("XML property files");
+				propertyFiles.stream().filter(buildContext::hasDelta)
+						.forEach(f -> getLog().info("\t".concat(f.getPath())));
+
+				propertyFiles.forEach(f -> {
+					Properties p = new Properties();
+					try {
+						if (f.getName().endsWith(".properties")) {
+							p.load(new FileInputStream(f));
+						} else {
+							p.loadFromXML(new FileInputStream(f));
+						}
+						p.forEach((k, v) -> {
+							getLog().info("\t\t".concat(k.toString()));
+							baseTree.add(k.toString());
+						});
+					} catch (IOException ioe) {
+						getLog().warn(
+								String.format("Failed to parse property file %s: %s", f.getPath(), ioe.getMessage()));
 					}
-					p.forEach((k, v) -> {
-						getLog().info("\t\t".concat(k.toString()));
-						baseTree.add(k.toString());
-					});
-				} catch (IOException ioe) {
-					getLog().warn(String.format("Failed to parse property file %s: %s", f.getPath(), ioe.getMessage()));
-				}
-			});
+				});
+
+			}
+
+			writeAnything = true;
 		}
 
-		File output = new File(packageDir, String.format("%s.java", rootClassName));
-		try {
-			ConstantFileGenerator.writeToFile(baseTree, output, packagePrefix, rootClassName);
-		} catch (IOException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		} finally {
-			if (buildContext != null) {
-				buildContext.refresh(packageDir);
+		if (writeAnything) {
+			File output = new File(packageDir, String.format("%s.java", rootClassName));
+			try {
+				ConstantFileGenerator.writeToFile(baseTree, output, packagePrefix, rootClassName);
+			} catch (IOException e) {
+				throw new MojoExecutionException(e.getMessage(), e);
+			} finally {
+				if (buildContext != null) {
+					buildContext.refresh(packageDir);
+				}
 			}
 		}
-		// }
 	}
 
 	private File createOutputDirectories() throws MojoFailureException {
