@@ -32,8 +32,13 @@ public class ConstantFileGenerator
 		tree.getTerminals().forEach(
 			t -> {
 				pw.println();
+				if (prefix.isEmpty()) {
+					pw.printf("%spublic static final String %s = \"%s\";", indent, t.toUpperCase(),
+							t).println();
+				} else {
 				pw.printf("%spublic static final String %s = \"%s.%s\";", indent, t.toUpperCase(),
 					prefix, t).println();
+				}
 			});
 
 		tree.getBranchNames().forEach(b -> {
