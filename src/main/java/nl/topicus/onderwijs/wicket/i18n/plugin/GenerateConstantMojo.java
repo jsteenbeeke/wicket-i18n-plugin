@@ -128,6 +128,7 @@ public class GenerateConstantMojo extends AbstractMojo {
 			} finally {
 				if (buildContext != null) {
 					buildContext.refresh(packageDir);
+					project.addCompileSourceRoot(outputDirectory.getPath());
 				}
 			}
 		}
