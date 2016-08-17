@@ -7,13 +7,10 @@ import java.io.PrintWriter;
 
 import nl.topicus.onderwijs.wicket.i18n.plugin.model.WicketMessageKeyTree;
 
-public class ConstantFileGenerator
-{
-	public static void writeToFile(WicketMessageKeyTree tree, File target, String packagePrefix,
-			String className) throws IOException
-	{
-		try (PrintWriter pw = new PrintWriter(new FileWriter(target)))
-		{
+public class ConstantFileGenerator {
+	public static void writeToFile(WicketMessageKeyTree tree, File target, String packagePrefix, String className)
+			throws IOException {
+		try (PrintWriter pw = new PrintWriter(new FileWriter(target))) {
 
 			pw.printf("package %s;", packagePrefix).println();
 			pw.println();
@@ -26,26 +23,20 @@ public class ConstantFileGenerator
 		}
 	}
 
-	private static void fillClass(PrintWriter pw, String indent, String prefix,
-			WicketMessageKeyTree tree)
-	{
-		tree.getTerminals().forEach(
-			t -> {
-				pw.println();
-				if (prefix.isEmpty()) {
-					pw.printf("%spublic static final String %s = \"%s\";", indent, t.toUpperCase(),
-							t).println();
-				} else {
-				pw.printf("%spublic static final String %s = \"%s.%s\";", indent, t.toUpperCase(),
-					prefix, t).println();
-				}
-			});
+	private static void fillClass(PrintWriter pw, String indent, String prefix, WicketMessageKeyTree tree) {
+		tree.getTerminals().stream().filter(t -> !t.isEmpty()).forEach(t -> {
+			pw.println();
+			if (prefix.isEmpty()) {
+				pw.printf("%spublic static final String %s = \"%s\";", indent, t.toUpperCase(), t).println();
+			} else {
+				pw.printf("%spublic static final String %s = \"%s.%s\";", indent, t.toUpperCase(), prefix, t).println();
+			}
+		});
 
 		tree.getBranchNames().forEach(b -> {
 			WicketMessageKeyTree branch = tree.getBranch(b);
 
-			if (branch.hasChildren())
-			{
+			if (branch.hasChildren()) {
 
 				pw.printf("%spublic static class %s {", indent, capitalizeFirst(b)).println();
 
@@ -60,10 +51,8 @@ public class ConstantFileGenerator
 
 	}
 
-	private static String capitalizeFirst(String input)
-	{
-		if (input.length() == 0)
-		{
+	private static String capitalizeFirst(String input) {
+		if (input.length() == 0) {
 			return input;
 		}
 
